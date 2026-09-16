@@ -65,22 +65,31 @@ export const delIncidenciaById = function (req, res) {
   return res.json({ message: "Incidencia eliminada correctamente" });
 };
 
-export const clasificacionIncidencia = function (req, res) {
-  const { id, clasificacion } = req.params;
+//-------------------------------------------------------
 
-  if (!id || !clasificacion) {
+export const clasificacionIncidencia = function (req, res) {
+  const { id } = req.params;
+
+  if (!id) {
     return res.status(400).json({ message: "Debes ingresar los datos" });
   }
 
-  // Se pasa a minúsculas para tolerar variaciones (ej: "alta", "Alta")
-  switch (clasificacion.toLowerCase()) {
-    case "alta":
+  // Se busca el objeto
+  const incidenciaEncontrada = incidencias.find(item => item.id === parseInt(id));
+
+  if (!incidenciaEncontrada) {
+    return res.status(404).json({ message: "Incidencia no encontrada" });
+  }
+
+
+  switch (incidenciaEncontrada.prioridad) {
+    case "Alta":
       return res.json({ id, clasificacion: "Critica" });
 
-    case "media":
+    case "Media":
       return res.json({ id, clasificacion: "Importante" });
 
-    case "baja":
+    case "Baja":
       return res.json({ id, clasificacion: "Normal" });
 
     default:
