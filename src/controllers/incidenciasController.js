@@ -47,3 +47,43 @@ export const createIncidencia = function (req, res) {
 
   res.status(201).json({ message: "Incidencia creada exitosamente" });
 };
+
+export const delIncidenciaById = function (req, res) {
+  const id = parseInt(req.params.id);
+
+  // findIndex recibe una función comparadora directa
+  const index = incidencias.findIndex(item => item.id === id);
+
+  // Si no existe, findIndex retorna -1
+  if (index === -1) {
+    return res.status(404).json({ message: "Incidencia no encontrada" });
+  }
+
+  // Elimina exactamente 1 elemento en la posición encontrada
+  incidencias.splice(index, 1);
+
+  return res.json({ message: "Incidencia eliminada correctamente" });
+};
+
+export const clasificacionIncidencia = function (req, res) {
+  const { id, clasificacion } = req.params;
+
+  if (!id || !clasificacion) {
+    return res.status(400).json({ message: "Debes ingresar los datos" });
+  }
+
+  // Se pasa a minúsculas para tolerar variaciones (ej: "alta", "Alta")
+  switch (clasificacion.toLowerCase()) {
+    case "alta":
+      return res.json({ id, clasificacion: "Critica" });
+
+    case "media":
+      return res.json({ id, clasificacion: "Importante" });
+
+    case "baja":
+      return res.json({ id, clasificacion: "Normal" });
+
+    default:
+      return res.status(400).json({ message: "Prioridad no válida" });
+  }
+};
