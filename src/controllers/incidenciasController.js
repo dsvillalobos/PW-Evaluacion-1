@@ -48,6 +48,48 @@ export const createIncidencia = function (req, res) {
   res.status(201).json({ message: "Incidencia creada exitosamente" });
 };
 
+export const cambiarEstadoIncidencia = function (req, res){
+  const id = parseInt(req.params.id);
+
+  const estado = req.body;
+
+  const incidencia = incidencias.find((incidencia) => incidencia.id === id)
+
+  if(!incidencia){
+    res.status(404).json({
+      message: "Incidencia no encontrada"
+    })
+  }
+
+  switch(estado){
+    case "Pendiente":
+      incidencias.estado("Pendiente")
+      break;
+    
+    case "En proceso":
+      incidencias.estado("En proceso");
+      break;
+
+    case "Resuelta":
+      incidencias.estado("Resuelta");
+      break;
+
+    case "Cancelada":
+      incidencias.estado("Cancelada");
+      break;
+    
+    default:
+      return res.status(400).json({
+        message: "Estado no válido"
+      });
+  }
+  res.json({
+    message: "Estado actualizado correctamente",
+    incidencia: incidencia
+  })
+}
+
+
 export const delIncidenciaById = function (req, res) {
   const id = parseInt(req.params.id);
 
