@@ -61,6 +61,73 @@ export const createIncidencia = function (req, res) {
   res.status(201).json({ message: "Incidencia creada exitosamente" });
 };
 
+export const cambiarEstadoIncidencia = function (req, res) {
+  const id = parseInt(req.params.id);
+  const { estado } = req.body;
+
+  const incidencia = incidencias.find((incidencia) => incidencia.id === id);
+
+  if (!incidencia) {
+    return res.status(404).json({
+      message: "Incidencia no encontrada",
+    });
+  }
+
+  switch (estado) {
+    case "Pendiente":
+      incidencia.estado = "Pendiente";
+      break;
+
+    case "En Proceso":
+      incidencia.estado = "En Proceso";
+      break;
+
+    case "Resuelta":
+      incidencia.estado = "Resuelta";
+      break;
+
+    case "Cancelada":
+      incidencia.estado = "Cancelada";
+      break;
+
+    default:
+      return res.status(400).json({
+        message: "Estado no válido",
+      });
+  }
+
+  return res.json({
+    message: "Estado actualizado correctamente",
+    incidencia: incidencia,
+  });
+};
+
+export const getEstadisticas = function (req, res) {
+  const pendientes = incidencias.filter(
+    (incidencia) => incidencia.estado.toLowerCase() === "pendiente",
+  ).length;
+
+  const enProceso = incidencias.filter(
+    (incidencia) => incidencia.estado.toLowerCase() === "en proceso",
+  ).length;
+
+  const resueltas = incidencias.filter(
+    (incidencia) => incidencia.estado.toLowerCase() === "resuelta",
+  ).length;
+
+  const canceladas = incidencias.filter(
+    (incidencia) => incidencia.estado.toLowerCase() === "cancelada",
+  ).length;
+
+  res.json({
+    totalIncidencias: incidencias.length,
+    pendientes: pendientes,
+    enProceso: enProceso,
+    resueltas: resueltas,
+    canceladas: canceladas,
+  });
+};
+
 export const delIncidenciaById = function (req, res) {
   const id = parseInt(req.params.id);
 
