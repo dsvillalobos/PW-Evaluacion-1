@@ -40,14 +40,6 @@ export const createIncidencia = function (req, res) {
   const { empleado, area, descripcion, prioridad } = req.body;
 
   // Validaciones
-  if (!empleado || !area || !descripcion || !prioridad) {
-    return res.status(400).json({ message: "Debes ingresar todos los datos" });
-  }
-
-  if (prioridad !== "Alta" && prioridad !== "Media" && prioridad !== "Baja") {
-    return res.status(400).json({ message: "Prioridad no valida" });
-  }
-
   if (
     !empleado?.trim() ||
     !area?.trim() ||
@@ -57,6 +49,10 @@ export const createIncidencia = function (req, res) {
     return res.status(400).json({
       message: "Debes ingresar todos los datos",
     });
+  }
+
+  if (prioridad !== "Alta" && prioridad !== "Media" && prioridad !== "Baja") {
+    return res.status(400).json({ message: "Prioridad no valida" });
   }
 
   // Si pasa las validaciones, entonces hay que registrar la incidencia
