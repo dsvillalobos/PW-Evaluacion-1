@@ -17,6 +17,8 @@ const incidencias = [
   },
 ];
 
+let numIncidencias = incidencias.length; // Comienza con 2
+
 export const getIncidencias = function (req, res) {
   res.status(200).json(incidencias);
 };
@@ -46,9 +48,20 @@ export const createIncidencia = function (req, res) {
     return res.status(400).json({ message: "Prioridad no valida" });
   }
 
+  if (
+    !empleado?.trim() ||
+    !area?.trim() ||
+    !descripcion?.trim() ||
+    !prioridad?.trim()
+  ) {
+    return res.status(400).json({
+      message: "Debes ingresar todos los datos",
+    });
+  }
+
   // Si pasa las validaciones, entonces hay que registrar la incidencia
   const nuevaIncidencia = {
-    id: incidencias.length + 1,
+    id: numIncidencias + 1,
     empleado: empleado,
     area: area,
     descripcion: descripcion,
@@ -56,6 +69,7 @@ export const createIncidencia = function (req, res) {
     estado: "Pendiente", // Por defecto, el estado inicial es Pendiente
   };
 
+  numIncidencias++;
   incidencias.push(nuevaIncidencia);
 
   res.status(201).json({ message: "Incidencia creada exitosamente" });
